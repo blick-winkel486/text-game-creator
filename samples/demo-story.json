@@ -1,0 +1,149 @@
+{
+  "format": "story-editor",
+  "version": 1,
+  "meta": {
+    "title": "深夜的灯塔",
+    "author": "示例",
+    "startNodeId": "n_start01",
+    "createdAt": "2026-09-27T00:00:00.000Z",
+    "updatedAt": "2026-09-27T00:00:00.000Z"
+  },
+  "variables": [
+    { "id": "v_trust01", "name": "信任", "type": "number", "initial": 0, "desc": "守灯人对你的信任度（0~3）" },
+    { "id": "v_lamp001", "name": "灯已点亮", "type": "bool", "initial": false, "desc": "你是否点亮了灯塔的灯" },
+    { "id": "v_key0001", "name": "有钥匙", "type": "bool", "initial": false, "desc": "是否拿到了塔门的钥匙" }
+  ],
+  "nodes": [
+    {
+      "id": "n_start01",
+      "title": "深夜的码头",
+      "text": "午夜。海水拍在礁石上，声音一阵一阵。\n灯塔在崖顶沉默着，一个老人坐在灯塔下的台阶上，手里提着一盏没点亮的灯。",
+      "x": 60, "y": 60,
+      "branches": [
+        {
+          "id": "b_greet01",
+          "text": "向老人打招呼",
+          "target": "n_talk01",
+          "condition": null,
+          "effects": [{ "varId": "v_trust01", "op": "add", "value": 1 }]
+        },
+        {
+          "id": "b_up0001",
+          "text": "径直走向塔门",
+          "target": "n_door001",
+          "condition": null,
+          "effects": []
+        }
+      ],
+      "autoRules": []
+    },
+    {
+      "id": "n_talk01",
+      "title": "老人的请求",
+      "text": "老人抬头看你，眼睛在夜色里显得很亮。\n「灯又灭了。人老了，爬不动那两百级台阶了。」",
+      "x": 340, "y": 60,
+      "branches": [
+        {
+          "id": "b_help01",
+          "text": "「我帮你把灯点上。」",
+          "target": "n_lamp001",
+          "condition": null,
+          "effects": [{ "varId": "v_trust01", "op": "add", "value": 1 }]
+        },
+        {
+          "id": "b_leave1",
+          "text": "「今晚就到这里吧。」",
+          "target": "n_endcold",
+          "condition": null,
+          "effects": []
+        }
+      ],
+      "autoRules": []
+    },
+    {
+      "id": "n_lamp001",
+      "title": "灯房",
+      "text": "两百级台阶比你想的更长。\n灯房里全是煤油味，你把提灯挂上铜钩，一圈光慢慢铺开，海面亮起一条路。",
+      "x": 620, "y": 60,
+      "branches": [
+        {
+          "id": "b_down01",
+          "text": "点好灯，下楼",
+          "target": "n_door001",
+          "condition": null,
+          "effects": [{ "varId": "v_lamp001", "op": "set", "value": true }]
+        },
+        {
+          "id": "b_sear01",
+          "text": "先搜一搜角落的工具柜",
+          "target": "n_door001",
+          "condition": null,
+          "effects": [
+            { "varId": "v_lamp001", "op": "set", "value": true },
+            { "varId": "v_trust01", "op": "add", "value": 1 },
+            { "varId": "v_key0001", "op": "set", "value": true }
+          ]
+        }
+      ],
+      "autoRules": []
+    },
+    {
+      "id": "n_door001",
+      "title": "塔下的门",
+      "text": "你回到塔下。铁门上有一把旧锁，链条擦得发亮。",
+      "x": 900, "y": 160,
+      "branches": [
+        {
+          "id": "b_open01",
+          "text": "用钥匙打开铁门",
+          "target": "n_secret1",
+          "condition": {
+            "type": "group",
+            "op": "all",
+            "items": [
+              { "type": "cmp", "varId": "v_trust01", "op": ">=", "value": 3 },
+              { "type": "cmp", "varId": "v_key0001", "op": "==", "value": true }
+            ]
+          },
+          "effects": []
+        }
+      ],
+      "autoRules": [
+        {
+          "id": "a_lamp01",
+          "condition": { "type": "cmp", "varId": "v_lamp001", "op": "==", "value": true },
+          "target": "n_endwarm"
+        },
+        {
+          "id": "a_else01",
+          "condition": null,
+          "target": "n_endcold"
+        }
+      ]
+    },
+    {
+      "id": "n_secret1",
+      "title": "守灯人的秘密（结局）",
+      "text": "钥匙插进锁孔，轻轻一拧。\n门后不是楼梯，而是一间小小的屋子：墙上挂满了这些年他点亮的每一夜，日期写得整整齐齐。\n最后一行的日期是今天——旁边写着你的名字。",
+      "x": 1180, "y": 0,
+      "branches": [],
+      "autoRules": []
+    },
+    {
+      "id": "n_endwarm",
+      "title": "温暖的夜（结局）",
+      "text": "灯亮着，你慢慢走回码头。\n老人还坐在那里，冲你抬了抬下巴：「够了，孩子。灯亮着就行。」",
+      "x": 1180, "y": 150,
+      "branches": [],
+      "autoRules": []
+    },
+    {
+      "id": "n_endcold",
+      "title": "冷清的夜（结局）",
+      "text": "你转身离开。\n海风把没点亮的提灯吹得轻轻摇晃，灯塔始终沉默。",
+      "x": 1180, "y": 300,
+      "branches": [],
+      "autoRules": []
+    }
+  ]
+}
